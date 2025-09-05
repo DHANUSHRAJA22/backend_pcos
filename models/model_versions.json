@@ -1,0 +1,45 @@
+{
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "timestamp": "2025-01-01T00:00:00Z",
+      "models": {
+        "face": {
+          "vgg16": {
+            "file": "pcos_detector_158.h5",
+            "framework": "tensorflow/keras",
+            "architecture": "VGG16",
+            "training_date": "2024-12-15",
+            "training_samples": 10000,
+            "validation_accuracy": 0.89,
+            "file_hash": "sha256_placeholder",
+            "notes": "Initial production model with facial PCOS detection"
+          }
+        },
+        "xray": {
+          "yolov8": {
+            "file": "bestv8.pt",
+            "framework": "ultralytics/pytorch",
+            "architecture": "YOLOv8n",
+            "training_date": "2024-12-20",
+            "training_samples": 5000,
+            "validation_map": 0.75,
+            "file_hash": "sha256_placeholder",
+            "notes": "YOLOv8 model for ovarian structure detection"
+          }
+        }
+      },
+      "ensemble_config": {
+        "default_method": "weighted_voting",
+        "face_weight": 0.4,
+        "xray_weight": 0.6,
+        "risk_thresholds": {
+          "low": 0.25,
+          "moderate": 0.75
+        }
+      }
+    }
+  ],
+  "current_version": "1.0.0",
+  "last_updated": "2025-01-01T00:00:00Z"
+}

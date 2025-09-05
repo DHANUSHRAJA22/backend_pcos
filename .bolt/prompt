@@ -1,0 +1,180 @@
+Project: PCOS Analyzer – Next-Level AI Backend with AutoML, SHAP, and Hot-Swapping
+
+Objective
+Build an advanced, research-grade FastAPI backend for the PCOS Analyzer project that represents the cutting edge of medical AI systems. This backend must leverage:
+- Multi-model ensemble architecture with 5+ models per modality
+- AutoML-powered ensemble optimization for automatic discovery of best configurations
+- Integrated SHAP/LIME explainability for full model interpretability
+- Live model hot-swapping capabilities for zero-downtime updates
+- Production-ready monitoring and research-friendly experimentation tools
+
+Core Advanced Features Required
+
+1. AutoML Ensemble Optimization
+- Implement automated ensemble method discovery using Bayesian optimization, grid search, and meta-learning
+- Support automatic hyperparameter tuning for stacking models (XGBoost, LightGBM, CatBoost, Neural Networks)
+- Provide API endpoints for triggering AutoML searches and retrieving optimal configurations
+- Enable continuous optimization based on validation data and production feedback
+- Expose endpoints: POST /automl/optimize, GET /automl/status, GET /automl/best_config
+
+2. SHAP Explainability Integration
+- Integrate SHAP explainability for every model prediction with feature importance analysis
+- Support LIME and GradCAM for alternative explanation methods
+- Return explainability artifacts (feature importance, saliency maps, attention weights) in API responses
+- Provide visual explanations as base64 images or accessible file paths
+- Enable clinical-context explanations with medical relevance scoring
+- Expose endpoints: POST /explain, GET /explain/status
+
+3. Live Model Hot-Swapping
+- Implement zero-downtime model replacement capabilities
+- Support batch model updates with dependency analysis and coordination
+- Include safety validation, version tracking, and automatic rollback on failure
+- Maintain complete audit trail of all model versions and swap operations
+- Enable API-driven model updates and configuration changes
+- Expose endpoints: POST /models/swap, POST /models/swap/batch, GET /models/swap/status
+
+Architecture Requirements
+
+File Structure:
+```
+backend/
+├── app.py                    # Enhanced FastAPI with all advanced endpoints
+├── config.py                 # Comprehensive configuration management
+├── schemas.py               # Extended Pydantic schemas for new features
+├── models/                  # Multi-model architecture
+│   ├── face_ensemble.py     # Face models (EfficientNet, ResNet, VGG, Inception, MobileNet, DenseNet)
+│   ├── xray_ensemble.py     # X-ray models (YOLOv8, ViT, DenseNet, ResNet, EfficientNet)
+│   ├── single_model.py      # Abstract base class for all models
+│   └── meta_models.py       # Stacking meta-classifiers
+├── automl/                  # AutoML optimization system
+│   ├── ensemble_optimizer.py
+│   ├── search_strategies.py
+│   └── meta_trainer.py
+├── explainability/          # Model interpretability system
+│   ├── shap_explainer.py
+│   ├── lime_explainer.py
+│   └── explainability_manager.py
+├── hot_swap/               # Live model swapping system
+│   ├── model_swapper.py
+│   └── swap_coordinator.py
+├── ensemble.py             # Advanced ensemble logic
+├── utils/
+│   ├── validators.py
+│   ├── preprocessors.py
+│   └── model_loader.py
+└── tests/                  # Comprehensive testing suite
+```
+
+API Endpoints Required
+
+Core Prediction:
+- POST /predict - Enhanced with explainability parameters (include_shap=true, explanation_methods=['shap','lime','gradcam'])
+- GET /health - Extended with AutoML and explainability system status
+
+AutoML Optimization:
+- POST /automl/optimize - Trigger ensemble optimization with validation data
+- GET /automl/status - Monitor optimization progress
+- GET /automl/best_config - Retrieve optimal ensemble configuration
+- POST /automl/apply_config - Apply discovered optimal configuration
+
+Explainability:
+- POST /explain - Generate detailed SHAP/LIME explanations for specific predictions
+- GET /explain/methods - List available explanation methods
+- GET /explain/status - Check explainability system readiness
+
+Model Management:
+- GET /models - List all loaded models with versions and status
+- POST /models/swap - Hot-swap individual models
+- POST /models/swap/batch - Coordinated batch model updates
+- GET /models/swap/status - Monitor swap operations
+- POST /models/validate - Validate new models before swapping
+
+Configuration:
+- GET /config - Retrieve current system configuration
+- POST /config/ensemble - Update ensemble method and weights
+- GET /config/automl - Get AutoML optimization settings
+
+Implementation Priorities
+
+1. Model Architecture First: Ensure all 11+ models (6 face, 5+ X-ray) load correctly with proper preprocessing
+2. Ensemble Logic: Implement all ensemble methods (soft voting, weighted, stacking) with runtime selection
+3. AutoML Integration: Add Bayesian optimization for automatic ensemble tuning
+4. SHAP Integration: Provide complete model interpretability with visual explanations
+5. Hot-Swapping: Enable production model updates without service interruption
+6. Research Tools: Provide comprehensive logging, metrics, and experimentation capabilities
+
+Key Technical Requirements
+
+- Use async/await throughout for optimal performance
+- Implement comprehensive error handling with detailed logging
+- Support GPU acceleration where available
+- Include memory-efficient model loading and caching
+- Provide detailed OpenAPI documentation for all endpoints
+- Enable configuration-driven behavior for research flexibility
+- Include comprehensive unit and integration tests
+- Support Docker deployment with GPU support
+- Implement structured logging for audit trails
+- Include performance monitoring and metrics collection
+
+Dependencies to Include
+- Core: fastapi, uvicorn, pydantic, numpy, pillow
+- ML Frameworks: torch, torchvision, tensorflow, scikit-learn
+- AutoML: optuna, hyperopt, mlens, autogluon
+- Explainability: shap, lime, captum
+- Ensemble: xgboost, lightgbm, catboost
+- Monitoring: prometheus-client, structlog
+- Testing: pytest, pytest-asyncio
+
+Research-Friendly Features
+- Modular architecture allowing easy model swapping
+- Configuration-driven ensemble methods
+- Comprehensive prediction logging for analysis
+- Support for custom preprocessing pipelines
+- Extensible explainability framework
+- Automated hyperparameter optimization
+- Production-ready monitoring and alerting
+
+This backend should represent the state-of-the-art in medical AI systems, combining multiple cutting-edge models with advanced ensemble techniques, comprehensive interpretability, and production-ready operational capabilities.Project: PCOS Analyzer – Multi-Model Ensemble AI Backend
+Objective
+Build a research-grade FastAPI backend for the PCOS Analyzer project that maximally improves medical image classification by leveraging multiple state-of-the-art deep learning models per modality (face photos and uterus X-rays) and combining their outputs with advanced ensemble and stacking/boosting logic.
+
+Key Principles
+Model Accuracy First: Prioritize correct model loading, inference, and accurate ensemble decision logic over any security, authentication, or UI concerns.
+
+Multi-Model Ensemble: For each task (face and X-ray analysis), always load and serve predictions from at least 5 of the strongest model architectures, not just one.
+
+Flexible Ensemble Logic: Implement soft voting, weighted voting (configured by user), and stacking/meta-model (XGBoost or logistic regression) to combine predictions. Allow configuration of which ensemble method is used at runtime.
+
+Modularity: Each model and ensemble logic must be plug-and-play, easily extendable or swappable. Clearly document with comments and # TODO where new models or methods should be added.
+
+Transparency: API responses must include per-model outputs as well as all ensemble outcomes for interpretability and research auditing.
+
+No Security/UI: Omit all security layers, authentication, or frontend code—focus exclusively on backend ML engineering.
+
+Required Endpoints
+POST /predict:
+
+Accept multipart form (face_img, xray_img).
+
+For each provided input, run all configured models and return:
+
+List of per-model predictions and confidences.
+
+The final combined/ensemble prediction(s) from all requested ensemble methods.
+
+If using a meta-stack (XGBoost/LogReg), include its result separately.
+
+GET /health:
+
+Return status, available models, ensemble logic config, and ready-state.
+
+(Optional for CLI): Add utilities for batch evaluation and ensemble experimentation.
+
+Architecture & File Expectations
+Project root: backend/ with logical modular structure (models/, ensemble.py, utils/, schemas.py, config.py, etc.)
+
+Use Pydantic/OpenAPI for all schemas, thorough code comments, and modular file design.
+
+Default all ensemble/config to be editable in a config file or via API, not hard-coded.
+
+All logic (model loading, voting, stacking, response) must be clean, auditable, and easily reusable for experiments.
