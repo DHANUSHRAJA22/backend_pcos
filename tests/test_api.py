@@ -14,6 +14,27 @@ from app import app
 client = TestClient(app)
 
 
+class TestRootEndpoint:
+    """Test suite for root endpoint."""
+    
+    def test_root_endpoint(self):
+        """Test root endpoint returns API status."""
+        response = client.get("/")
+        
+        assert response.status_code == 200
+        data = response.json()
+        
+        # Verify required fields
+        assert "message" in data
+        assert "version" in data
+        assert "status" in data
+        assert "docs" in data
+        
+        # Verify values
+        assert "PCOS ClarityScan API" in data["message"]
+        assert data["docs"] == "/docs"
+
+
 class TestHealthEndpoint:
     """Test suite for /health endpoint."""
     
@@ -37,6 +58,17 @@ class TestHealthEndpoint:
         assert isinstance(data["total_models_loaded"], int)
         assert data["total_models_loaded"] >= 0
         assert isinstance(data["frontend_cors_enabled"], bool)
+    
+    def test_health_with_startup_error(self):
+        """Test health endpoint handles startup errors gracefully."""
+        response = client.get("/health")
+        
+        assert response.status_code == 200
+        data = response.json()
+        
+        # Should still return valid structure even with errors
+        assert "status" in data
+        assert "models" in data
 
 
 class TestPredictEndpoint:

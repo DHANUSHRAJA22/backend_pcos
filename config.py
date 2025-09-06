@@ -10,6 +10,9 @@ from typing import Dict, List, Any, Optional
 from enum import Enum
 from pydantic_settings import BaseSettings
 
+# Optional; safe defaults are used if you omit them
+TOP_K_ENABLED = True
+TOP_K_MODELS = 5
 
 class RiskLevel(str, Enum):
     """PCOS risk assessment levels."""
@@ -48,7 +51,12 @@ class PCOSSettings(BaseSettings):
     
     # CORS Configuration - Frontend Integration
     FRONTEND_URL: str = "http://localhost:8080"
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:8080", "http://127.0.0.1:8080"]
+    ALLOWED_ORIGINS: List[str] = [
+        "http://localhost:8080", 
+        "http://127.0.0.1:8080",
+        "http://localhost:3000",  # Common React dev port
+        "http://127.0.0.1:3000"
+    ]
     
     # File Upload Configuration
     MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 10MB

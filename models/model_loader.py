@@ -44,17 +44,27 @@ class ModelLoader:
             logger.info("Initializing all AI models...")
             
             # Initialize models concurrently
-            init_tasks = [
-                self.face_manager.initialize(model_registry.get("face_models", {})),
-                self.xray_manager.initialize(model_registry.get("xray_models", {})),
-                self.gender_detector.initialize()
-            ]
+            face_loaded = False
+            xray_loaded = False
+            gender_loaded = False
             
-            results = await asyncio.gather(*init_tasks, return_exceptions=True)
+            # Initialize face models
+            try:
+                face_loaded = await self.face_manager.initialize(model_registry.get("face_models", {}))
+            except Exception as e:
+                logger.error(f"Face manager initialization failed: {e}")
             
-            face_loaded = results[0] is True
-            xray_loaded = results[1] is True
-            gender_loaded = results[2] is True
+            # Initialize X-ray models
+            try:
+                xray_loaded = await self.xray_manager.initialize(model_registry.get("xray_models", {}))
+            except Exception as e:
+                logger.error(f"X-ray manager initialization failed: {e}")
+            
+            # Initialize gender detector
+            try:
+                gender_loaded = await self.gender_detector.initialize()
+            except Exception as e:
+                logger.error(f"Gender detector initialization failed: {e}")
             
             # Log results
             if face_loaded:
@@ -70,7 +80,7 @@ class ModelLoader:
             if gender_loaded:
                 logger.info("✓ Gender detector loaded successfully")
             else:
-                logger.error("✗ Gender detector failed to load")
+                logger.warning("⚠️ Gender detector failed to load (optional)")
             
             # At least one model type must be loaded
             self.all_loaded = face_loaded or xray_loaded

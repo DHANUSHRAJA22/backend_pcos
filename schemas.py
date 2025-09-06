@@ -34,6 +34,8 @@ class ModelStatus(str, Enum):
 
 class ModelPrediction(BaseModel):
     """Individual AI model prediction result."""
+    model_config = {'protected_namespaces': ()}
+    
     model_name: str = Field(..., description="AI model identifier")
     model_version: str = Field(..., description="Model version")
     framework: str = Field(..., description="ML framework used")
@@ -46,6 +48,8 @@ class ModelPrediction(BaseModel):
 
 class GenderDetectionResult(BaseModel):
     """Gender detection result for facial images."""
+    model_config = {'protected_namespaces': ()}
+    
     predicted_gender: str = Field(..., description="Predicted gender (male/female)")
     confidence: float = Field(..., ge=0.0, le=1.0, description="Detection confidence")
     processing_time_ms: float = Field(..., description="Processing time")
@@ -54,6 +58,8 @@ class GenderDetectionResult(BaseModel):
 
 class FacePredictions(BaseModel):
     """Aggregated predictions from facial analysis models."""
+    model_config = {'protected_namespaces': ()}
+    
     individual_predictions: List[ModelPrediction] = Field(..., description="Per-model predictions")
     average_probability: float = Field(..., description="Average probability across models")
     consensus_label: RiskLevel = Field(..., description="Consensus prediction")
@@ -63,6 +69,8 @@ class FacePredictions(BaseModel):
 
 class XrayPredictions(BaseModel):
     """Aggregated predictions from X-ray analysis models."""
+    model_config = {'protected_namespaces': ()}
+    
     individual_predictions: List[ModelPrediction] = Field(..., description="Per-model predictions")
     average_probability: float = Field(..., description="Average probability across models")
     consensus_label: RiskLevel = Field(..., description="Consensus prediction")
@@ -72,6 +80,8 @@ class XrayPredictions(BaseModel):
 
 class EnsembleResult(BaseModel):
     """Ensemble prediction result."""
+    model_config = {'protected_namespaces': ()}
+    
     ensemble_method: EnsembleMethod = Field(..., description="Ensemble method used")
     final_probability: float = Field(..., ge=0.0, le=1.0, description="Final ensemble probability")
     final_risk_level: RiskLevel = Field(..., description="Final risk assessment")
@@ -81,6 +91,8 @@ class EnsembleResult(BaseModel):
 
 class PredictionResponse(BaseModel):
     """Complete prediction response for frontend integration."""
+    model_config = {'protected_namespaces': ()}
+    
     success: bool = Field(True, description="Request success status")
     face_predictions: Optional[FacePredictions] = Field(None, description="Facial analysis results")
     xray_predictions: Optional[XrayPredictions] = Field(None, description="X-ray analysis results")
@@ -92,6 +104,8 @@ class PredictionResponse(BaseModel):
 
 class ModelInfo(BaseModel):
     """Information about a loaded AI model."""
+    model_config = {'protected_namespaces': ()}
+    
     status: ModelStatus = Field(..., description="Model loading status")
     model_path: str = Field(..., description="Path to model file")
     framework: str = Field(..., description="ML framework")
@@ -103,6 +117,8 @@ class ModelInfo(BaseModel):
 
 class HealthResponse(BaseModel):
     """API health check response."""
+    model_config = {'protected_namespaces': ()}
+    
     status: str = Field(..., description="API status (healthy/degraded/unhealthy)")
     version: str = Field(..., description="API version")
     models: Dict[str, ModelInfo] = Field(..., description="Status of all AI models")
@@ -113,6 +129,8 @@ class HealthResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     """Standardized error response."""
+    model_config = {'protected_namespaces': ()}
+    
     success: bool = Field(False, description="Always false for errors")
     error: str = Field(..., description="Error message")
     error_code: str = Field(..., description="Error code for debugging")
@@ -121,6 +139,8 @@ class ErrorResponse(BaseModel):
 
 class EvaluationResult(BaseModel):
     """Model evaluation results."""
+    model_config = {'protected_namespaces': ()}
+    
     model_name: str = Field(..., description="Evaluated model name")
     accuracy: float = Field(..., description="Model accuracy")
     precision: float = Field(..., description="Model precision")
@@ -132,6 +152,8 @@ class EvaluationResult(BaseModel):
 
 class ModelSwapRequest(BaseModel):
     """Request schema for model hot-swapping."""
+    model_config = {'protected_namespaces': ()}
+    
     model_name: str = Field(..., description="Model to swap")
     new_model_path: str = Field(..., description="Path to new model file")
     modality: str = Field(..., description="Model modality (face/xray)")
@@ -140,6 +162,8 @@ class ModelSwapRequest(BaseModel):
 
 class ModelSwapResponse(BaseModel):
     """Response schema for model swap operations."""
+    model_config = {'protected_namespaces': ()}
+    
     success: bool = Field(..., description="Swap operation success")
     model_name: str = Field(..., description="Swapped model name")
     old_model_hash: Optional[str] = Field(None, description="Previous model hash")

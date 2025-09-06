@@ -9,11 +9,21 @@ import time
 from typing import Dict, Optional
 from io import BytesIO
 import os
+import logging
+logger = logging.getLogger(__name__)
+from typing import Any
 
 import numpy as np
 from PIL import Image
-import torch
-from ultralytics import YOLO
+
+# Import PyTorch/Ultralytics with error handling
+try:
+    import torch
+    from ultralytics import YOLO
+    TORCH_AVAILABLE = True
+except ImportError:
+    logger.warning("PyTorch/Ultralytics not available - X-ray models will not load")
+    TORCH_AVAILABLE = False
 
 from models.base_model import BaseAIModel
 from schemas import ModelPrediction, RiskLevel
@@ -36,6 +46,10 @@ class YOLOv8XrayModel(BaseAIModel):
     
     async def load_model(self) -> bool:
         """Load the actual trained YOLOv8 model."""
+        if not TORCH_AVAILABLE:
+            logger.error("PyTorch/Ultralytics not available - cannot load YOLOv8 model")
+            return False
+            
         try:
             # Verify model file exists
             if not os.path.exists(self.model_path):

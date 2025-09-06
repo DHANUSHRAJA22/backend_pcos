@@ -8,10 +8,19 @@ import logging
 import time
 from typing import Dict
 from io import BytesIO
+import logging
+logger = logging.getLogger(__name__)
 
 import numpy as np
-import cv2
 from PIL import Image
+
+# Import OpenCV with error handling
+try:
+    import cv2
+    CV2_AVAILABLE = True
+except ImportError:
+    logger.warning("OpenCV not available - gender detection will not work")
+    CV2_AVAILABLE = False
 
 from schemas import GenderDetectionResult
 
@@ -32,6 +41,10 @@ class GenderDetector:
         
     async def initialize(self) -> bool:
         """Initialize gender detection system."""
+        if not CV2_AVAILABLE:
+            logger.warning("OpenCV not available - gender detection disabled")
+            return False
+            
         try:
             logger.info("Initializing gender detector...")
             

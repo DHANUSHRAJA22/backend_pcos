@@ -9,11 +9,21 @@ import time
 from typing import Dict, Optional
 from io import BytesIO
 import os
-
+from typing import Any
+import logging
+logger = logging.getLogger(__name__)
+import numpy as np
 import numpy as np
 from PIL import Image
-import tensorflow as tf
-from tensorflow import keras
+
+# Import TensorFlow with error handling
+try:
+    import tensorflow as tf
+    from tensorflow import keras
+    TF_AVAILABLE = True
+except ImportError:
+    logger.warning("TensorFlow not available - face models will not load")
+    TF_AVAILABLE = False
 
 from models.base_model import BaseAIModel
 from schemas import ModelPrediction, RiskLevel
@@ -37,6 +47,10 @@ class VGG16FaceModel(BaseAIModel):
     
     async def load_model(self) -> bool:
         """Load the actual trained VGG16 Keras model."""
+        if not TF_AVAILABLE:
+            logger.error("TensorFlow not available - cannot load VGG16 model")
+            return False
+            
         try:
             # Verify model file exists
             if not os.path.exists(self.model_path):

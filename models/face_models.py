@@ -10,6 +10,8 @@ import logging
 from typing import Dict, List, Optional, Any
 from io import BytesIO
 import time
+from schemas import FacePredictions
+
 
 from fastapi import UploadFile
 import numpy as np
